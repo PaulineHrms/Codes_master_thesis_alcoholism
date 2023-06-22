@@ -1,0 +1,169 @@
+#Import the freesurfer label definitions from the Desikan atlas (Desikan et al 2006)
+import FreeSurfer.qry
+
+hemisphere.left |= '*.left'
+hemisphere.right |= '*.right'
+cerebellum.right |= 'Cerebellum_*.right'
+cerebellum.left |= 'Cerebellum_*.left'
+
+medulla |= 175
+pons |= 174
+midbrain |= 173
+cerebellarpedoncle |= 178
+brainstem_other |= Brain_Stem
+brainstem |= (medulla
+              or pons
+              or midbrain
+              or cerebellarpedoncle
+              or brainstem_other) 
+
+
+CC_Splenium |= 5251
+CC_Isthmus |= 5252
+CC_Post_Midbody |= 5253
+CC_Ant_Midbody |= 5254
+CC_Genu |= 5255
+
+midCC |= (CC_Splenium 
+          or CC_Isthmus
+          or CC_Post_Midbody
+          or CC_Ant_Midbody
+          or CC_Genu)
+
+
+middlefrontal.side |= (rostralmiddlefrontal.side 
+                       or caudalmiddlefrontal.side)  
+inferiorfrontal.side |= (parsopercularis.side 
+                         or parstriangularis.side 
+                         or parsorbitalis.side) 
+orbitofrontal.side |= (lateralorbitofrontal.side 
+                       or medialorbitofrontal.side)
+
+cingulate.side |= (caudalanteriorcingulate.side                 
+                or posteriorcingulate.side 
+                or rostralanteriorcingulate.side
+                or isthmuscingulate.side)
+
+
+frontal.side |= (superiorfrontal.side 
+                 or middlefrontal.side 
+                 or inferiorfrontal.side 
+                 or orbitofrontal.side 
+                 or frontalpole.side 
+                 or precentral.side 
+                 or paracentral.side)
+
+temporal.side |= (entorhinal.side                   
+                  or temporalpole.side 
+                  or fusiform.side 
+                  or superiortemporal.side 
+                  or middletemporal.side 
+                  or inferiortemporal.side 
+                  or transversetemporal.side 
+                  or bankssts.side)
+parietal.side |= (postcentral.side 
+                  or precuneus.side 
+                  or supramarginal.side 
+                  or superiorparietal.side 
+                  or inferiorparietal.side)
+occipital.side |= (lingual.side 
+                   or pericalcarine.side 
+                   or cuneus.side 
+                   or lateraloccipital.side 
+                   or lingual.side)
+
+
+#test_lateral.side = hemisphere.side not in medial_of(Putamen.side) not in hemisphere.opposite
+#test_medial.side =  hemisphere.side not in lateral_of(Putamen.side) not in hemisphere.opposite
+#test_anterior.side =  hemisphere.side not in posterior_of(Putamen.side) not in hemisphere.opposite
+#test_posterior.side =  hemisphere.side not in anterior_of(Putamen.side) not in hemisphere.opposite
+#test_superior.side =  only(superior_of(Putamen.side)) not in hemisphere.opposite
+#test_inferior.side =  only(inferior_of(Putamen.side)) not in hemisphere.opposite
+
+modbrain=midbrain
+
+
+#######################
+### Corpus Callosum ###
+#######################
+
+CC_tract_Genu = (endpoints_in(frontal.left or cingulate.left)
+                 and endpoints_in(frontal.right or cingulate.right)
+                 and CC_Genu
+                 not in (parietal.left or parietal.right
+                         or temporal.left or temporal.right
+                         or occipital.left or occipital.right)
+                 not in brainstem
+                 not in (Thalamus_Proper.left or Thalamus_Proper.right)
+                 not in (Putamen.left or Putamen.right)
+                 not in (pallidum.left or pallidum.right)
+                 not in (caudate.left or caudate.right)
+                 not in (choroid_plexus.left or choroid_plexus.right)
+                 not in (VentralDC.left or VentralDC.right)
+                 not in CC_Ant_Midbody
+                 not in posterior_of(CC_Ant_Midbody))
+
+CC_tract_Ant_Midbody = (endpoints_in(frontal.left or parietal.left or cingulate.left)
+                     and endpoints_in(frontal.right or parietal.right or cingulate.right)
+                     and CC_Ant_Midbody
+                     not in (temporal.left or temporal.right
+                             or occipital.left or occipital.right)
+                     not in brainstem
+                     not in (Thalamus_Proper.left or Thalamus_Proper.right)
+                     not in (Putamen.left or Putamen.right)
+                     not in (pallidum.left or pallidum.right)
+                     not in (caudate.left or caudate.right)
+                     not in (choroid_plexus.left or choroid_plexus.right)
+                     not in (VentralDC.left or VentralDC.right)
+                     not in CC_Post_Midbody
+                     not in CC_Genu
+                     not in posterior_of(CC_Post_Midbody)
+                     not in anterior_of(CC_Genu))
+
+CC_tract_Post_Midbody = (endpoints_in(frontal.left or parietal.left or cingulate.left)
+                     and endpoints_in(frontal.right or parietal.right or cingulate.right)
+                     and CC_Post_Midbody
+                     not in (temporal.left or temporal.right
+                             or occipital.left or occipital.right)
+                     not in brainstem
+                     not in (Thalamus_Proper.left or Thalamus_Proper.right)
+                     not in (Putamen.left or Putamen.right)
+                     not in (pallidum.left or pallidum.right)
+                     not in (caudate.left or caudate.right)
+                     not in (choroid_plexus.left or choroid_plexus.right)
+                     not in (VentralDC.left or VentralDC.right)
+                     not in CC_Isthmus
+                     not in CC_Ant_Midbody
+                     not in posterior_of(CC_Isthmus)
+                     not in anterior_of(CC_Ant_Midbody))
+
+CC_tract_Isthmus = (endpoints_in(frontal.left or parietal.left or occipital.left or temporal.left or cingulate.left)
+                      and endpoints_in(frontal.right or parietal.right or occipital.right or temporal.right or cingulate.right)
+                      and CC_Isthmus
+                      not in brainstem
+                      not in (Thalamus_Proper.left or Thalamus_Proper.right)
+                      not in (Putamen.left or Putamen.right)
+                      not in (pallidum.left or pallidum.right)
+                      not in (caudate.left or caudate.right)
+                      not in (choroid_plexus.left or choroid_plexus.right)
+                      not in CC_Post_Midbody
+                      not in CC_Splenium
+                      not in anterior_of(CC_Post_Midbody)
+                      not in posterior_of(CC_Splenium))
+
+CC_tract_Splenium = (endpoints_in(parietal.left or occipital.left or temporal.left or cingulate.left)
+                  and endpoints_in(parietal.right or occipital.right or temporal.right or cingulate.right)
+                  and CC_Splenium
+                  not in brainstem
+                  not in (Thalamus_Proper.left or Thalamus_Proper.right)
+                  not in (Putamen.left or Putamen.right)
+                  not in (pallidum.left or pallidum.right)
+                  not in (caudate.left or caudate.right)
+                  not in (choroid_plexus.left or choroid_plexus.right)
+                  not in (VentralDC.left or VentralDC.right)
+                  not in CC_Isthmus
+                  not in anterior_of(CC_Isthmus))
+
+
+
+CC_tract = CC_tract_Genu or CC_tract_Ant_Midbody or CC_tract_Post_Midbody or CC_tract_Isthmus or CC_tract_Splenium
