@@ -1,0 +1,112 @@
+#Import the freesurfer label definitions from the Desikan atlas (Desikan et al 2006)
+import FreeSurfer.qry
+
+hemisphere.left |= '*.left'
+hemisphere.right |= '*.right'
+cerebellum.right |= 'Cerebellum_*.right'
+cerebellum.left |= 'Cerebellum_*.left'
+
+medulla |= 175
+pons |= 174
+midbrain |= 173
+cerebellarpedoncle |= 178
+brainstem_other |= Brain_Stem
+brainstem |= (medulla
+              or pons
+              or midbrain
+              or cerebellarpedoncle
+              or brainstem_other) 
+
+CC_Splenium |= 5251
+CC_Isthmus |= 5252
+CC_Post_Midbody |= 5253
+CC_Ant_Midbody |= 5254
+CC_Genu |= 5255
+
+midCC |= (CC_Splenium 
+          or CC_Isthmus
+          or CC_Post_Midbody
+          or CC_Ant_Midbody
+          or CC_Genu)
+
+
+middlefrontal.side |= (rostralmiddlefrontal.side 
+                       or caudalmiddlefrontal.side)  
+inferiorfrontal.side |= (parsopercularis.side 
+                         or parstriangularis.side 
+                         or parsorbitalis.side) 
+orbitofrontal.side |= (lateralorbitofrontal.side 
+                       or medialorbitofrontal.side)
+
+cingulate.side |= (caudalanteriorcingulate.side                 
+                or posteriorcingulate.side 
+                or rostralanteriorcingulate.side
+                or isthmuscingulate.side)
+
+
+frontal.side |= (superiorfrontal.side 
+                 or middlefrontal.side 
+                 or inferiorfrontal.side 
+                 or orbitofrontal.side 
+                 or frontalpole.side 
+                 or precentral.side 
+                 or paracentral.side)
+
+temporal.side |= (entorhinal.side                   
+                  or temporalpole.side 
+                  or fusiform.side 
+                  or superiortemporal.side 
+                  or middletemporal.side 
+                  or inferiortemporal.side 
+                  or transversetemporal.side 
+                  or bankssts.side)
+parietal.side |= (postcentral.side 
+                  or precuneus.side 
+                  or supramarginal.side 
+                  or superiorparietal.side 
+                  or inferiorparietal.side)
+occipital.side |= (lingual.side 
+                   or pericalcarine.side 
+                   or cuneus.side 
+                   or lateraloccipital.side 
+                   or lingual.side)
+
+
+#test_lateral.side = hemisphere.side not in medial_of(Putamen.side) not in hemisphere.opposite
+#test_medial.side =  hemisphere.side not in lateral_of(Putamen.side) not in hemisphere.opposite
+#test_anterior.side =  hemisphere.side not in posterior_of(Putamen.side) not in hemisphere.opposite
+#test_posterior.side =  hemisphere.side not in anterior_of(Putamen.side) not in hemisphere.opposite
+#test_superior.side =  only(superior_of(Putamen.side)) not in hemisphere.opposite
+#test_inferior.side =  only(inferior_of(Putamen.side)) not in hemisphere.opposite
+
+modbrain=midbrain
+
+###########################
+### Uncinate fasciculus ###
+###########################
+UF.side = (endpoints_in((middlefrontal.side
+                         or inferiorfrontal.side
+                         or lateralorbitofrontal.side 
+                         or medialorbitofrontal.side)
+                         and anterior_of(caudalmiddlefrontal.side))
+           and endpoints_in(fusiform.side
+                            or temporalpole.side
+                            or frontalpole.side)
+
+           not in superior_of(caudalanteriorcingulate.side)    
+           not in superiorfrontal.side    
+           not in rostralmiddlefrontal.side
+           not in posterior_of(Amygdala.side)
+           not in cingulate.side
+           not in midCC
+           not in brainstem
+           not in Thalamus_Proper.side
+           not in Putamen.side
+           not in pallidum.side
+           not in hemisphere.opposite
+           not in VentralDC.side
+           not in Optic_Chiasm
+           not in posterior_of(CC_Ant_Midbody))
+
+UF = UF.left or UF.right
+
